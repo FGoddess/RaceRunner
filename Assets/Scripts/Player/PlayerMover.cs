@@ -8,7 +8,9 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _gravity;
     [SerializeField] private float _gravityWallSlidingMultiplier;
-    private float _yVelocity;
+
+    [SerializeField] private float _yVelocity;
+    private float _startWallSlidingVelocity = 0.3f;
 
     private bool _isWallSliding;
     private bool _needToTurn;
@@ -88,7 +90,11 @@ public class PlayerMover : MonoBehaviour
                     }
                 case ObstacleType.Wall:
                     {
-                        if (_yVelocity < 0) _isWallSliding = true;
+                        if (_yVelocity < 0 && !_isWallSliding)
+                        {
+                            _isWallSliding = true;
+                            _yVelocity = -_startWallSlidingVelocity;
+                        }
 
                         Jump(() =>
                         {
