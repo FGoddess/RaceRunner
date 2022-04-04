@@ -9,7 +9,7 @@ public class PlayerMover : MonoBehaviour
     [SerializeField] private float _gravity;
     [SerializeField] private float _gravityWallSlidingMultiplier;
 
-    [SerializeField] private float _yVelocity;
+    private float _yVelocity;
     private float _startWallSlidingVelocity = 0.3f;
 
     private bool _isWallSliding;
@@ -40,9 +40,10 @@ public class PlayerMover : MonoBehaviour
         {
             _yVelocity = -_gravity * Time.deltaTime;
             _isWallSliding = false;
+
             Jump();
 
-            if(_needToTurn)
+            if (_needToTurn)
             {
                 ReflectTransform();
                 _needToTurn = false;
@@ -61,6 +62,8 @@ public class PlayerMover : MonoBehaviour
         _characterController.Move(_moveDirection * _speed * Time.deltaTime);
     }
 
+    
+
     private void Jump(Action action = null)
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
@@ -77,7 +80,7 @@ public class PlayerMover : MonoBehaviour
     {
         if (hit.gameObject.TryGetComponent(out Obstacle obstacle))
         {
-            switch(obstacle.ObstacleType)
+            switch (obstacle.ObstacleType)
             {
                 case ObstacleType.Ground:
                     {
