@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class AIMover : MonoBehaviour
@@ -7,6 +8,9 @@ public class AIMover : MonoBehaviour
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _gravity;
     [SerializeField] private float _gravityWallSlidingMultiplier;
+
+    [SerializeField] private float _minJumpDelay = 0.2f;
+    [SerializeField] private float _maxJumpDelay = 0.6f;
 
     private float _yVelocity;
     private float _startWallSlidingVelocity = 0.3f;
@@ -20,6 +24,8 @@ public class AIMover : MonoBehaviour
 
     private CharacterController _characterController;
     private Animator _animator;
+
+    private Coroutine _jumpCoroutine;
 
     private void Awake()
     {
@@ -118,17 +124,29 @@ public class AIMover : MonoBehaviour
                             _yVelocity = -_startWallSlidingVelocity;
                         }
 
-                        Jump(() =>
+                        if (_jumpCoroutine == null)
                         {
-                            ReflectTransform();
-                            _isWallSliding = false;
-                        });
-
+                            _jumpCoroutine = StartCoroutine(JumpDelay());
+                        }
 
                         break;
                     }
             }
         }
+    }
+
+    private IEnumerator JumpDelay()
+    {
+        var delay = UnityEngine.Random.Range(_minJumpDelay, _maxJumpDelay);
+        yield return new WaitForSeconds(delay);
+
+        Jump(() =>
+        {
+            ReflectTransform();
+            _isWallSliding = false;
+        });
+
+        _jumpCoroutine = null;
     }
 
     private void ReflectTransform()
