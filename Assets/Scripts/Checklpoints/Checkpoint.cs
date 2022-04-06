@@ -11,14 +11,14 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.TryGetComponent(out BotInfo bot))
+        if (other.gameObject.TryGetComponent(out BotData bot))
         {
-            _checkpointManager.ActivateBotCheckpoint(bot.Id);
+            bot.RankData.CheckpointId++;
         }
 
-        if (other.gameObject.TryGetComponent(out PlayerMover player))
+        if (other.gameObject.TryGetComponent(out PlayerData player))
         {
-            _checkpointManager.ActivatePlayerCheckpoint();
+            player.RankData.CheckpointId++;
         }
     }
 }
