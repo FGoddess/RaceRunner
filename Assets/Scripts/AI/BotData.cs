@@ -1,12 +1,13 @@
 using UnityEngine;
 
-public class BotInfo : MonoBehaviour
+public class BotData : MonoBehaviour
 {
-    private string _name;
+    [SerializeField] private string _name;
     private int _id;
 
     public string Name => _name;
     public int Id => _id;
+    public RankData RankData { get; set; } = new RankData();
 
     public void Initialize(string name, int id)
     {
