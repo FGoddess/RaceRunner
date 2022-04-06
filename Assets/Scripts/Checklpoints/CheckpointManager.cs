@@ -21,31 +21,24 @@ public class CheckpointManager : MonoBehaviour
     {
         if (_bots.Count == 0) return;
 
-        var distance = Vector3.Distance(_player.transform.position, _checkpoints[_player.RankData.CheckpointId].transform.position);
-        _player.RankData.CheckpointScore = distance + _player.RankData.CheckpointId * _checkpointScoreMultiplier + _player.RankData.LapCount * _lapScoreMultiplier;
+        CalculateDistance(_player.transform.position, _checkpoints[_player.RankData.CheckpointId].transform.position, _player.RankData);
 
         for (int i = 0; i < _bots.Count; i++)
         {
-            var botDistance = Vector3.Distance(_bots[i].transform.position, _checkpoints[_bots[i].RankData.CheckpointId].transform.position);
-            _bots[i].RankData.CheckpointScore = botDistance + _bots[i].RankData.CheckpointId * _checkpointScoreMultiplier + _bots[i].RankData.LapCount * _lapScoreMultiplier;
+            CalculateDistance(_bots[i].transform.position, _checkpoints[_bots[i].RankData.CheckpointId].transform.position, _bots[i].RankData);
         }
     }
 
-    /*
-
-    public void GetLastParticipant()
+    private void CalculateDistance(Vector3 from, Vector3 to, RankData rankData)
     {
-        var minBotPoints = _botsPoints.Where(p => p > 0).Min();
+        var distance = Vector3.Distance(from, to);
 
-        if (minBotPoints < _playerPoints)
+        if (rankData.MinDistance < distance)
         {
-            Debug.Log("Kill bot");
-            _participantKiller.KillBot();
+            return;
         }
-        else
-        {
-            Debug.Log("Kill player");
-            //game over screen
-        }
-    }*/
+
+        rankData.MinDistance = distance;
+        rankData.CheckpointScore = -distance + rankData.CheckpointId * _checkpointScoreMultiplier + rankData.LapCount * _lapScoreMultiplier;
+    }
 }
