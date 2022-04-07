@@ -3,10 +3,8 @@ using UnityEngine;
 
 public class BotsManager : MonoBehaviour
 {
-    [SerializeField] private CheckpointManager _checkpointManager;
-    [SerializeField] private RankSystem _rankSystem;
-    
     [SerializeField] private NamesData _namesData;
+    [SerializeField] private GameObject[] _initializables;
 
     private List<BotData> _bots;
 
@@ -24,7 +22,12 @@ public class BotsManager : MonoBehaviour
             }
         }
 
-        _checkpointManager.Initialize(_bots);
-        _rankSystem.Initialize(_bots);
+        for (int i = 0; i < _initializables.Length; i++)
+        {
+            if (_initializables[i].TryGetComponent(out IInitializable initializable))
+            {
+                initializable.Initialize(_bots);
+            }
+        }
     }
 }

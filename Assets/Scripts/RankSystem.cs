@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.UI;
 
-public class RankSystem : MonoBehaviour
+public class RankSystem : MonoBehaviour, IInitializable
 {
     [SerializeField] private PlayerData _player;
 
@@ -27,8 +27,6 @@ public class RankSystem : MonoBehaviour
     private void Update()
     {
         if (_bots.Count == 0 || _texts.Count > _dictionary.Count) return;
-
-        //Debug.Log(_dictionary[_bots[0].Name].CheckpointScore + " " + _dictionary[_bots[1].Name].CheckpointScore);
 
         var orderedDictionary = _dictionary.OrderByDescending(s => s.Value.CheckpointScore);
 
