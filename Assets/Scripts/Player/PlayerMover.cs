@@ -61,9 +61,7 @@ public class PlayerMover : MonoBehaviour
         _moveDirection = new Vector3(transform.forward.x, _yVelocity, 0);
         _characterController.Move(_moveDirection * _speed * Time.deltaTime);
     }
-
     
-
     private void Jump(Action action = null)
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))

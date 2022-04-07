@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckpointManager : MonoBehaviour
+public class CheckpointManager : MonoBehaviour, IInitializable
 {
     [SerializeField] private ParticipantKiller _participantKiller;
     [SerializeField] private PlayerData _player;
@@ -10,7 +10,7 @@ public class CheckpointManager : MonoBehaviour
     [SerializeField] private List<Checkpoint> _checkpoints;
 
     private int _checkpointScoreMultiplier = 10;
-    private int _lapScoreMultiplier = 100;
+    private int _lapScoreMultiplier = 1000;
 
     public void Initialize(List<BotData> bots)
     {
@@ -21,11 +21,22 @@ public class CheckpointManager : MonoBehaviour
     {
         if (_bots.Count == 0) return;
 
+        TryResetCheckpointId(_player.RankData);
+
         CalculateDistance(_player.transform.position, _checkpoints[_player.RankData.CheckpointId].transform.position, _player.RankData);
 
         for (int i = 0; i < _bots.Count; i++)
         {
+            TryResetCheckpointId(_bots[i].RankData);
             CalculateDistance(_bots[i].transform.position, _checkpoints[_bots[i].RankData.CheckpointId].transform.position, _bots[i].RankData);
+        }
+    }
+
+    private void TryResetCheckpointId(RankData rankData)
+    {
+        if (rankData.CheckpointId >= _checkpoints.Count)
+        {
+            rankData.CheckpointId = 0;
         }
     }
 
