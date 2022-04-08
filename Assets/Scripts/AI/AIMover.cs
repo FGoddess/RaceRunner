@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class AIMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
