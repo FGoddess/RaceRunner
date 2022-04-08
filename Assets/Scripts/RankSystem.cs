@@ -1,22 +1,27 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class RankSystem : MonoBehaviour, IInitializable
 {
     [SerializeField] private PlayerData _player;
+    [SerializeField] private List<Text> _texts;
 
     private List<BotData> _bots;
     private Dictionary<string, RankData> _dictionary;
 
-    [SerializeField] private List<Text> _texts;
 
     public void Initialize(List<BotData> bots)
     {
         _bots = bots;
 
-        _dictionary = new Dictionary<string, RankData> { { _player.name, _player.RankData } };
+        if(string.IsNullOrEmpty(_player.Name))
+        {
+            _player.Name = _player.name;
+        }
+
+        _dictionary = new Dictionary<string, RankData> { { _player.Name, _player.RankData } };
 
         foreach (var bot in _bots)
         {
@@ -30,9 +35,12 @@ public class RankSystem : MonoBehaviour, IInitializable
 
         var orderedDictionary = _dictionary.OrderByDescending(s => s.Value.CheckpointScore);
 
-        for(int i = 0; i < _dictionary.Count; i++)
+        for (int i = 0; i < _dictionary.Count; i++)
         {
-            _texts[i].text = orderedDictionary.ElementAt(i).Key.ToString();
+            var element = orderedDictionary.ElementAt(i).Key;
+            _texts[i].text = element;
+
+            _texts[i].color = element == _player.Name ? Color.red : Color.black;
         }
     }
 }
