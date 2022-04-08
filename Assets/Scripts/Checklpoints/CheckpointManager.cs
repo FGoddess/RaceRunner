@@ -3,14 +3,29 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour, IInitializable
 {
-    [SerializeField] private ParticipantKiller _participantKiller;
     [SerializeField] private PlayerData _player;
 
     [SerializeField] private List<BotData> _bots;
-    [SerializeField] private List<Checkpoint> _checkpoints;
+    private List<Checkpoint> _checkpoints;
 
-    private int _checkpointScoreMultiplier = 10;
+    private int _checkpointScoreMultiplier = 100;
     private int _lapScoreMultiplier = 1000;
+
+    private void Awake()
+    {
+        _checkpoints = new List<Checkpoint>();
+        int counter = 0;
+
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            if (transform.GetChild(i).TryGetComponent(out Checkpoint checkpoint))
+            {
+                _checkpoints.Add(checkpoint);
+                checkpoint.Initialize(counter);
+                counter++;
+            }
+        }
+    }
 
     public void Initialize(List<BotData> bots)
     {
@@ -22,7 +37,6 @@ public class CheckpointManager : MonoBehaviour, IInitializable
         if (_bots.Count == 0) return;
 
         TryResetCheckpointId(_player.RankData);
-
         CalculateDistance(_player.transform.position, _checkpoints[_player.RankData.CheckpointId].transform.position, _player.RankData);
 
         for (int i = 0; i < _bots.Count; i++)

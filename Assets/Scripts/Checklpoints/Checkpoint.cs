@@ -2,18 +2,31 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
+    private int _id;
+
+    public void Initialize(int id)
+    {
+        _id = id;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.TryGetComponent(out BotData bot))
         {
-            bot.RankData.MinDistance = float.MaxValue;
-            bot.RankData.CheckpointId++;
+            TryIncreaseId(bot.RankData);
         }
         
         if (other.gameObject.TryGetComponent(out PlayerData player))
         {
-            player.RankData.MinDistance = float.MaxValue;
-            player.RankData.CheckpointId++;
+            TryIncreaseId(player.RankData);
         }
+    }
+
+    private void TryIncreaseId(RankData rankData)
+    {
+        if (rankData.CheckpointId != _id) return;
+
+        rankData.MinDistance = float.MaxValue;
+        rankData.CheckpointId++;
     }
 }
