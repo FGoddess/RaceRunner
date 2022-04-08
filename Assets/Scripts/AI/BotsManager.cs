@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class BotsManager : MonoBehaviour
 {
@@ -12,13 +13,19 @@ public class BotsManager : MonoBehaviour
     {
         _bots = new List<BotData>();
 
+        var usedNames = new List<string>();
+
         for (int i = 0; i < transform.childCount; i++)
         {
             if (transform.GetChild(i).TryGetComponent(out BotData bot))
             {
                 _bots.Add(bot);
 
-                bot.Initialize(_namesData.Names[Random.Range(0, _namesData.Names.Length)], i);
+                var availableNames = _namesData.Names.Where(n => !usedNames.Contains(n)).ToArray();
+
+                bot.Initialize(availableNames.ElementAt(Random.Range(0, availableNames.Length)), i);
+
+                usedNames.Add(bot.Name);
             }
         }
 
