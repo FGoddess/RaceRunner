@@ -14,6 +14,7 @@ public class PlayerMover : MonoBehaviour
 
     private bool _isWallSliding;
     private bool _needToTurn;
+    private bool _isGameOver;
 
     private Vector3 _moveDirection;
 
@@ -36,6 +37,8 @@ public class PlayerMover : MonoBehaviour
 
     private void Update()
     {
+        if (_isGameOver) return;
+
         if (_characterController.isGrounded)
         {
             _yVelocity = -_gravity * Time.deltaTime;
@@ -64,7 +67,7 @@ public class PlayerMover : MonoBehaviour
     
     private void Jump(Action action = null)
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
             _yVelocity = _jumpForce;
 
@@ -112,5 +115,11 @@ public class PlayerMover : MonoBehaviour
     private void ReflectTransform()
     {
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -transform.eulerAngles.y, transform.eulerAngles.z);
+    }
+
+    public void GameOver()
+    {
+        _isGameOver = true;
+        _animator.SetTrigger("Dance");
     }
 }

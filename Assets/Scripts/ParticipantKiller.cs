@@ -5,6 +5,7 @@ using UnityEngine;
 public class ParticipantKiller : MonoBehaviour, IInitializable
 {
     [SerializeField] private PlayerData _player;
+    [SerializeField] private GameOverScreen _gameOverScreen;
 
     private List<BotData> _bots;
 
@@ -23,14 +24,19 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
         if (_player.RankData.CheckpointScore == lowestRank.CheckpointScore)
         {
             _player.gameObject.SetActive(false);
-            //player.Die();
-            Debug.Log("Player is dead");
+            _gameOverScreen.EndGame(false);
             return;
         }
 
         BotData lastBot = _bots.FirstOrDefault(r => r.RankData.CheckpointScore == lowestRank.CheckpointScore);
         lastBot.gameObject.SetActive(false);
         _bots.Remove(lastBot);
+
+        if(_bots.Count == 0)
+        {
+            _player.GetComponent<PlayerMover>().GameOver();
+            _gameOverScreen.EndGame(true);
+        }
     }
 
     public void Initialize(List<BotData> bots)
