@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -20,6 +21,8 @@ public class PlayerMover : MonoBehaviour
 
     private CharacterController _characterController;
     private Animator _animator;
+
+    private Coroutine _reflectRoutine;
 
     private void Awake()
     {
@@ -46,10 +49,9 @@ public class PlayerMover : MonoBehaviour
 
             Jump();
 
-            if (_needToTurn)
+            if (_needToTurn && _reflectRoutine == null)
             {
-                ReflectTransform();
-                _needToTurn = false;
+                _reflectRoutine = StartCoroutine(DelayedReflectTransform());
             }
         }
         else
@@ -85,7 +87,7 @@ public class PlayerMover : MonoBehaviour
             {
                 case ObstacleType.Ground:
                     {
-                        if (hit.collider.transform.up != transform.forward && !_needToTurn)
+                        if (hit.collider.transform.up != transform.forward && !_needToTurn && _reflectRoutine == null)
                         {
                             _needToTurn = true;
                         }
@@ -94,27 +96,44 @@ public class PlayerMover : MonoBehaviour
                     }
                 case ObstacleType.Wall:
                     {
-                        if (_yVelocity < 0 && !_isWallSliding)
-                        {
-                            _isWallSliding = true;
-                            _yVelocity = -_startWallSlidingVelocity;
-                        }
-
-                        Jump(() =>
-                        {
-                            ReflectTransform();
-                            _isWallSliding = false;
-                        });
-
+                        WallBehaviour();
+                        break;
+                    }
+                case ObstacleType.SlideWall:
+                    {
+                        WallBehaviour();
                         break;
                     }
             }
         }
     }
 
+    private void WallBehaviour()
+    {
+        if (_yVelocity < 0 && !_isWallSliding)
+        {
+            _isWallSliding = true;
+            _yVelocity = -_startWallSlidingVelocity;
+        }
+
+        Jump(() =>
+        {
+            ReflectTransform();
+            _isWallSliding = false;
+        });
+    }
+
     private void ReflectTransform()
     {
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -transform.eulerAngles.y, transform.eulerAngles.z);
+    }
+
+    private IEnumerator DelayedReflectTransform()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ReflectTransform();
+        _needToTurn = false;
+        _reflectRoutine = null;
     }
 
     public void GameOver()

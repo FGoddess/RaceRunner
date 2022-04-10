@@ -27,6 +27,7 @@ public class AIMover : MonoBehaviour
     private Animator _animator;
 
     private Coroutine _jumpCoroutine;
+    private Coroutine _reflectRoutine;
 
     private void Awake()
     {
@@ -57,10 +58,17 @@ public class AIMover : MonoBehaviour
 
             Raycast();
 
-            if (_needToTurn)
+            if (_needToTurn && _reflectRoutine == null)
             {
-                ReflectTransform();
-                _needToTurn = false;
+                if (_jumpCoroutine != null)
+                {
+                    ReflectTransform();
+                    _needToTurn = false;
+                }
+                else
+                {
+                    _reflectRoutine = StartCoroutine(DelayedReflectTransform());
+                }
             }
         }
         else
@@ -110,7 +118,7 @@ public class AIMover : MonoBehaviour
             {
                 case ObstacleType.Ground:
                     {
-                        if (hit.collider.transform.up != transform.forward && !_needToTurn)
+                        if (hit.collider.transform.up != transform.forward && !_needToTurn && _reflectRoutine == null)
                         {
                             _needToTurn = true;
                         }
@@ -128,6 +136,16 @@ public class AIMover : MonoBehaviour
                         if (_jumpCoroutine == null)
                         {
                             _jumpCoroutine = StartCoroutine(JumpDelay());
+                        }
+
+                        break;
+                    }
+                case ObstacleType.SlideWall:
+                    {
+                        if (_yVelocity < 0 && !_isWallSliding)
+                        {
+                            _isWallSliding = true;
+                            _yVelocity = -_startWallSlidingVelocity;
                         }
 
                         break;
@@ -153,5 +171,13 @@ public class AIMover : MonoBehaviour
     private void ReflectTransform()
     {
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -transform.eulerAngles.y, transform.eulerAngles.z);
+    }
+
+    private IEnumerator DelayedReflectTransform()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ReflectTransform();
+        _needToTurn = false;
+        _reflectRoutine = null;
     }
 }
