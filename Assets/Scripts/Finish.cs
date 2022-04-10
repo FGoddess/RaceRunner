@@ -5,12 +5,15 @@ public class Finish : MonoBehaviour, IInitializable
 {
     [SerializeField] private ParticipantKiller _participantKiller;
 
+    private PlayerData _player;
+
     private int _botsCount;
     private int _counter;
 
-    public void Initialize(List<BotData> bots)
+    public void Initialize(List<BotData> bots, PlayerData player)
     {
         _botsCount = bots.Count;
+        _player = player;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -24,7 +27,7 @@ public class Finish : MonoBehaviour, IInitializable
 
         if (other.gameObject.TryGetComponent(out PlayerData player))
         {
-            player.RankData.LapCount++;
+            _player.RankData.LapCount++;
         }
 
         if(_counter == _botsCount)
