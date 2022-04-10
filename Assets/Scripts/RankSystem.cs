@@ -5,16 +5,17 @@ using UnityEngine.UI;
 
 public class RankSystem : MonoBehaviour, IInitializable
 {
-    [SerializeField] private PlayerData _player;
     [SerializeField] private List<Text> _texts;
+    private PlayerData _player;
 
     private List<BotData> _bots;
     private Dictionary<string, RankData> _dictionary;
 
 
-    public void Initialize(List<BotData> bots)
+    public void Initialize(List<BotData> bots, PlayerData player)
     {
         _bots = bots;
+        _player = player;
 
         if(string.IsNullOrEmpty(_player.Name))
         {

@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class CheckpointManager : MonoBehaviour, IInitializable
 {
-    [SerializeField] private PlayerData _player;
-
     [SerializeField] private List<BotData> _bots;
+    private PlayerData _player;
+
     private List<Checkpoint> _checkpoints;
 
     private int _checkpointScoreMultiplier = 100;
@@ -27,9 +27,10 @@ public class CheckpointManager : MonoBehaviour, IInitializable
         }
     }
 
-    public void Initialize(List<BotData> bots)
+    public void Initialize(List<BotData> bots, PlayerData player)
     {
         _bots = bots;
+        _player = player;
     }
 
     private void Update()

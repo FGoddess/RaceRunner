@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ParticipantKiller : MonoBehaviour, IInitializable
 {
-    [SerializeField] private PlayerData _player;
     [SerializeField] private GameOverScreen _gameOverScreen;
+    private PlayerData _player;
 
     private List<BotData> _bots;
 
@@ -39,8 +39,9 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
         }
     }
 
-    public void Initialize(List<BotData> bots)
+    public void Initialize(List<BotData> bots, PlayerData player)
     {
         _bots = bots;
+        _player = player;
     }
 }

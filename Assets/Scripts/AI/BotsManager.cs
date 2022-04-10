@@ -4,6 +4,7 @@ using System.Linq;
 
 public class BotsManager : MonoBehaviour
 {
+    [SerializeField] private PlayerData _playerData;
     [SerializeField] private NamesData _namesData;
     [SerializeField] private GameObject[] _initializables;
 
@@ -33,7 +34,7 @@ public class BotsManager : MonoBehaviour
         {
             if (_initializables[i].TryGetComponent(out IInitializable initializable))
             {
-                initializable.Initialize(_bots);
+                initializable.Initialize(_bots, _playerData);
             }
         }
     }
