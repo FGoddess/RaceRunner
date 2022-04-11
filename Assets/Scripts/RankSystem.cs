@@ -41,7 +41,7 @@ public class RankSystem : MonoBehaviour, IInitializable
             var element = orderedDictionary.ElementAt(i).Key;
             _texts[i].text = element;
 
-            _texts[i].color = element == _player.Name ? Color.red : Color.black;
+            _texts[i].color = element == _player.Name ? Color.green : Color.white;
         }
     }
 }
