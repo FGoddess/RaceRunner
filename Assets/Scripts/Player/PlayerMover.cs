@@ -46,6 +46,11 @@ public class PlayerMover : MonoBehaviour
     {
         if (_isGameOver) return;
 
+        if (_characterController.collisionFlags == CollisionFlags.None)
+        {
+            _isWallSliding = false;
+        }
+
         if (_characterController.isGrounded)
         {
             _yVelocity = -_gravity * Time.deltaTime;
@@ -64,7 +69,7 @@ public class PlayerMover : MonoBehaviour
             _yVelocity -= _isWallSliding ? temp * _gravityWallSlidingMultiplier : temp;
         }
 
-        if(_needSpringJump)
+        if (_needSpringJump)
         {
             _yVelocity = _jumpForce * _springJumpForceMultiplier;
             _animator.SetTrigger("Jump");
@@ -98,6 +103,8 @@ public class PlayerMover : MonoBehaviour
             {
                 case ObstacleType.Ground:
                     {
+                        if (!_characterController.isGrounded) return;
+
                         if (hit.collider.transform.up != transform.forward && !_needToTurn && _reflectRoutine == null)
                         {
                             _needToTurn = true;

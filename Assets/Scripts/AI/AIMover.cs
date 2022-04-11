@@ -53,6 +53,11 @@ public class AIMover : MonoBehaviour
             _isJumping = false;
         }
 
+        if (_characterController.collisionFlags == CollisionFlags.None)
+        {
+            _isWallSliding = false;
+        }
+
         if (_characterController.isGrounded)
         {
             _yVelocity = -_gravity * Time.deltaTime;
@@ -185,7 +190,6 @@ public class AIMover : MonoBehaviour
 
     private void ReflectTransform()
     {
-        Debug.Log("da");
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -transform.eulerAngles.y, transform.eulerAngles.z);
     }
 
