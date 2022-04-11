@@ -9,6 +9,7 @@ public class AIMover : MonoBehaviour
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _gravity;
     [SerializeField] private float _gravityWallSlidingMultiplier;
+    [SerializeField] private float _springJumpForceMultiplier = 1.5f;
 
     [SerializeField] private float _minJumpDelay = 0.2f;
     [SerializeField] private float _maxJumpDelay = 0.6f;
@@ -16,10 +17,12 @@ public class AIMover : MonoBehaviour
     private float _yVelocity;
     private float _startWallSlidingVelocity = 0.3f;
     private float _raycastDistance = 3f;
+    private float _reflectionDelay = 0.3f;
 
     private bool _isWallSliding;
     private bool _needToTurn;
     private bool _isJumping;
+    private bool _needSpringJump;
 
     private Vector3 _moveDirection;
 
@@ -75,6 +78,13 @@ public class AIMover : MonoBehaviour
         {
             var temp = _gravity * Time.deltaTime;
             _yVelocity -= _isWallSliding ? temp * _gravityWallSlidingMultiplier : temp;
+        }
+
+        if (_needSpringJump)
+        {
+            _yVelocity = _jumpForce * _springJumpForceMultiplier;
+            _animator.SetTrigger("Jump");
+            _needSpringJump = false;
         }
 
         _animator.SetBool("IsWallSlide", _isWallSliding);
@@ -150,6 +160,11 @@ public class AIMover : MonoBehaviour
 
                         break;
                     }
+                case ObstacleType.Spring:
+                    {
+                        _needSpringJump = true;
+                        break;
+                    }
             }
         }
     }
@@ -170,12 +185,13 @@ public class AIMover : MonoBehaviour
 
     private void ReflectTransform()
     {
+        Debug.Log("da");
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, -transform.eulerAngles.y, transform.eulerAngles.z);
     }
 
     private IEnumerator DelayedReflectTransform()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(_reflectionDelay);
         ReflectTransform();
         _needToTurn = false;
         _reflectRoutine = null;

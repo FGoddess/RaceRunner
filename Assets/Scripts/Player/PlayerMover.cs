@@ -7,15 +7,19 @@ public class PlayerMover : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
+    [SerializeField] private float _springJumpForceMultiplier = 1.5f;
     [SerializeField] private float _gravity;
     [SerializeField] private float _gravityWallSlidingMultiplier;
 
     private float _yVelocity;
     private float _startWallSlidingVelocity = 0.3f;
+    private float _reflectionDelay = 0.3f;
+    private float _danceXRotation = 180f;
 
     private bool _isWallSliding;
     private bool _needToTurn;
     private bool _isGameOver;
+    private bool _needSpringJump;
 
     private Vector3 _moveDirection;
 
@@ -60,13 +64,20 @@ public class PlayerMover : MonoBehaviour
             _yVelocity -= _isWallSliding ? temp * _gravityWallSlidingMultiplier : temp;
         }
 
+        if(_needSpringJump)
+        {
+            _yVelocity = _jumpForce * _springJumpForceMultiplier;
+            _animator.SetTrigger("Jump");
+            _needSpringJump = false;
+        }
+
         _animator.SetBool("IsWallSlide", _isWallSliding);
         _animator.SetBool("IsGrounded", _characterController.isGrounded);
 
         _moveDirection = new Vector3(transform.forward.x, _yVelocity, 0);
         _characterController.Move(_moveDirection * _speed * Time.deltaTime);
     }
-    
+
     private void Jump(Action action = null)
     {
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
@@ -104,6 +115,11 @@ public class PlayerMover : MonoBehaviour
                         WallBehaviour();
                         break;
                     }
+                case ObstacleType.Spring:
+                    {
+                        _needSpringJump = true;
+                        break;
+                    }
             }
         }
     }
@@ -130,7 +146,7 @@ public class PlayerMover : MonoBehaviour
 
     private IEnumerator DelayedReflectTransform()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(_reflectionDelay);
         ReflectTransform();
         _needToTurn = false;
         _reflectRoutine = null;
@@ -139,6 +155,7 @@ public class PlayerMover : MonoBehaviour
     public void GameOver()
     {
         _isGameOver = true;
+        transform.eulerAngles = new Vector3(transform.eulerAngles.x, _danceXRotation, transform.eulerAngles.z);
         _animator.SetTrigger("Dance");
     }
 }

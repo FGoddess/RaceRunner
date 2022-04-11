@@ -2,5 +2,6 @@ public enum ObstacleType
 { 
     Ground,
     Wall,
-    SlideWall
+    SlideWall,
+    Spring
 }
