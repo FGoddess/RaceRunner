@@ -25,4 +25,9 @@ public class ButtonsHandler : MonoBehaviour
     {
         SceneManager.LoadScene(0);
     }
+
+    public void LoadTestLevel()
+    {
+        SceneManager.LoadScene("TestLevel");
+    }
 }
