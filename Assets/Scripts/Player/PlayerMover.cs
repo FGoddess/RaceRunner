@@ -28,6 +28,8 @@ public class PlayerMover : MonoBehaviour
 
     private Coroutine _reflectRoutine;
 
+    public event Action Jumped;
+
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
@@ -87,6 +89,8 @@ public class PlayerMover : MonoBehaviour
     {
         if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
+            Jumped?.Invoke();
+
             _yVelocity = _jumpForce;
 
             _animator.SetTrigger("Jump");
