@@ -11,13 +11,12 @@ public class RankSystem : MonoBehaviour, IInitializable
     private List<BotData> _bots;
     private Dictionary<string, RankData> _dictionary;
 
-
     public void Initialize(List<BotData> bots, PlayerData player)
     {
         _bots = bots;
         _player = player;
 
-        if(string.IsNullOrEmpty(_player.Name))
+        if (string.IsNullOrEmpty(_player.Name))
         {
             _player.Name = _player.name;
         }
