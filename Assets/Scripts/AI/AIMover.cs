@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class AIMover : MonoBehaviour
 {
+    [SerializeField] private Countdown _countdown;
+
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _gravity;
@@ -19,9 +21,10 @@ public class AIMover : MonoBehaviour
     private float _raycastDistance = 3f;
     private float _reflectionDelay = 0.3f;
 
-    private bool _isWallSliding;
-    private bool _needToTurn;
     private bool _isJumping;
+    private bool _isWallSliding;
+    private bool _isCountdownEnded;
+    private bool _needToTurn;
     private bool _needSpringJump;
 
     private Vector3 _moveDirection;
@@ -31,6 +34,20 @@ public class AIMover : MonoBehaviour
 
     private Coroutine _jumpCoroutine;
     private Coroutine _reflectRoutine;
+
+    private void OnEnable()
+    {
+        _countdown.CountdownEnded += OnCountDownEnded;
+    }
+    private void OnDisable()
+    {
+        _countdown.CountdownEnded -= OnCountDownEnded;
+    }
+
+    private void OnCountDownEnded()
+    {
+        _isCountdownEnded = true;
+    }
 
     private void Awake()
     {
@@ -48,6 +65,8 @@ public class AIMover : MonoBehaviour
 
     private void Update()
     {
+        if (!_isCountdownEnded) return;
+
         if (_isWallSliding)
         {
             _isJumping = false;
@@ -133,6 +152,8 @@ public class AIMover : MonoBehaviour
             {
                 case ObstacleType.Ground:
                     {
+                        if (!_characterController.isGrounded) return;
+
                         if (hit.collider.transform.up != transform.forward && !_needToTurn && _reflectRoutine == null)
                         {
                             _needToTurn = true;
@@ -167,6 +188,7 @@ public class AIMover : MonoBehaviour
                     }
                 case ObstacleType.Spring:
                     {
+                        Debug.Log("da");
                         _needSpringJump = true;
                         break;
                     }

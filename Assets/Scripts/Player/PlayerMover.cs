@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMover : MonoBehaviour
 {
+    [SerializeField] private Countdown _countdown;
+
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _springJumpForceMultiplier = 1.5f;
@@ -17,8 +19,9 @@ public class PlayerMover : MonoBehaviour
     private float _danceXRotation = 180f;
 
     private bool _isWallSliding;
-    private bool _needToTurn;
     private bool _isGameOver;
+    private bool _isCountdownEnded;
+    private bool _needToTurn;
     private bool _needSpringJump;
 
     private Vector3 _moveDirection;
@@ -29,6 +32,20 @@ public class PlayerMover : MonoBehaviour
     private Coroutine _reflectRoutine;
 
     public event Action Jumped;
+
+    private void OnEnable()
+    {
+        _countdown.CountdownEnded += OnCountDownEnded;
+    }
+    private void OnDisable()
+    {
+        _countdown.CountdownEnded -= OnCountDownEnded;
+    }
+
+    private void OnCountDownEnded()
+    {
+        _isCountdownEnded = true;
+    }
 
     private void Awake()
     {
@@ -46,7 +63,7 @@ public class PlayerMover : MonoBehaviour
 
     private void Update()
     {
-        if (_isGameOver) return;
+        if (_isGameOver || !_isCountdownEnded) return;
 
         if (_characterController.collisionFlags == CollisionFlags.None)
         {
