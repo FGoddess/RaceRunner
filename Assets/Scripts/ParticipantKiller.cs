@@ -4,10 +4,9 @@ using UnityEngine;
 
 public class ParticipantKiller : MonoBehaviour, IInitializable
 {
-    [SerializeField] private PlayerLevel _playerLevel;
     [SerializeField] private GameOverScreen _gameOverScreen;
-
     private PlayerData _player;
+
     private List<BotData> _bots;
 
     public void KillLastParticipant()
@@ -35,7 +34,6 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
 
         if(_bots.Count == 0)
         {
-            _playerLevel.IncreaseLevel();
             _player.GetComponent<PlayerMover>().GameOver();
             _gameOverScreen.EndGame(true);
         }

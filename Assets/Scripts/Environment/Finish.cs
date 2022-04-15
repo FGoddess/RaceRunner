@@ -35,6 +35,11 @@ public class Finish : MonoBehaviour, IInitializable
             _participantKiller.KillLastParticipant();
             _botsCount--;
             _counter = 0;
+
+            if(_botsCount == 0)
+            {
+                Debug.Log("Game Over");
+            }
         }
     }
 }
