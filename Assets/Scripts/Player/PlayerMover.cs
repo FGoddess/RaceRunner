@@ -86,6 +86,13 @@ public class PlayerMover : MonoBehaviour
         {
             var temp = _gravity * Time.deltaTime;
             _yVelocity -= _isWallSliding ? temp * _gravityWallSlidingMultiplier : temp;
+
+            if (_reflectRoutine != null)
+            {
+                StopCoroutine(_reflectRoutine);
+                _reflectRoutine = null;
+                _needToTurn = false;
+            }
         }
 
         if (_needSpringJump)
