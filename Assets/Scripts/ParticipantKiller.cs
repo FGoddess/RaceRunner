@@ -24,19 +24,25 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
 
         if (_player.RankData.CheckpointScore == lowestRank.CheckpointScore)
         {
-            _player.gameObject.SetActive(false);
+            _player.GetComponent<PlayerMover>().Die();
             _gameOverScreen.EndGame(false);
+
+            foreach(var bot in _bots)
+            {
+                bot.GetComponent<AIMover>().Die();
+            }
+
             return;
         }
 
         BotData lastBot = _bots.FirstOrDefault(r => r.RankData.CheckpointScore == lowestRank.CheckpointScore);
-        lastBot.gameObject.SetActive(false);
+        lastBot.GetComponent<AIMover>().Die();
         _bots.Remove(lastBot);
 
         if(_bots.Count == 0)
         {
             _playerLevel.IncreaseLevel();
-            _player.GetComponent<PlayerMover>().GameOver();
+            _player.GetComponent<PlayerMover>().WinGame();
             _gameOverScreen.EndGame(true);
         }
     }

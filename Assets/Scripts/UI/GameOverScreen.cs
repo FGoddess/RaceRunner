@@ -1,15 +1,17 @@
 using UnityEngine;
+using DG.Tweening;
+using System.Collections;
 
 public class GameOverScreen : MonoBehaviour
 {
     [SerializeField] private CanvasGroup _winPanel;
     [SerializeField] private CanvasGroup _lossPanel;
 
-    [SerializeField] private int _maxLevel = 3;
+    private int _maxLevel = 15;
 
     public void EndGame(bool isWin)
     {
-        ActivatePanel(isWin ? _winPanel : _lossPanel);
+        StartCoroutine(ActivatePanel(isWin ? _winPanel : _lossPanel));
 
         if(isWin)
         {
@@ -26,9 +28,9 @@ public class GameOverScreen : MonoBehaviour
         }
     }
 
-    private void ActivatePanel(CanvasGroup panel)
+    private IEnumerator ActivatePanel(CanvasGroup panel)
     {
-        panel.alpha = 1f;
-        panel.blocksRaycasts = true;
+        yield return new WaitForSeconds(1f);
+        panel.DOFade(1f, 2f).OnComplete(() => panel.blocksRaycasts = true);
     }
 }
