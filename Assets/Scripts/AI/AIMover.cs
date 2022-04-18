@@ -35,6 +35,9 @@ public class AIMover : MonoBehaviour
     private Coroutine _jumpCoroutine;
     private Coroutine _reflectRoutine;
 
+    private ParticleSystem _deathVFX;
+    private bool _isGameOver;
+
     private void OnEnable()
     {
         _countdown.CountdownEnded += OnCountDownEnded;
@@ -52,6 +55,7 @@ public class AIMover : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _deathVFX = transform.GetComponentInChildren<ParticleSystem>(true);
 
         if (transform.GetChild(0).TryGetComponent(out Animator animator))
         {
@@ -65,7 +69,7 @@ public class AIMover : MonoBehaviour
 
     private void Update()
     {
-        if (!_isCountdownEnded) return;
+        if (!_isCountdownEnded || _isGameOver) return;
 
         if (_isWallSliding)
         {
@@ -195,7 +199,6 @@ public class AIMover : MonoBehaviour
                     }
                 case ObstacleType.Spring:
                     {
-                        Debug.Log("da");
                         _needSpringJump = true;
                         break;
                     }
@@ -228,5 +231,19 @@ public class AIMover : MonoBehaviour
         ReflectTransform();
         _needToTurn = false;
         _reflectRoutine = null;
+    }
+
+    public void Die()
+    {
+        StartCoroutine(DeathRoutine());
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        _isGameOver = true;
+        GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
+        _deathVFX.gameObject.SetActive(true);
+        yield return new WaitForSeconds(_deathVFX.main.duration);
+        gameObject.SetActive(false);
     }
 }

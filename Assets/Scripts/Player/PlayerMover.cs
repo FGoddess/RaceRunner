@@ -31,6 +31,8 @@ public class PlayerMover : MonoBehaviour
 
     private Coroutine _reflectRoutine;
 
+    private ParticleSystem _deathVFX;
+
     public event Action Jumped;
 
     private void OnEnable()
@@ -50,6 +52,7 @@ public class PlayerMover : MonoBehaviour
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
+        _deathVFX = transform.GetComponentInChildren<ParticleSystem>(true);
 
         if (transform.GetChild(0).TryGetComponent(out Animator animator))
         {
@@ -187,10 +190,24 @@ public class PlayerMover : MonoBehaviour
         _reflectRoutine = null;
     }
 
-    public void GameOver()
+    public void WinGame()
     {
         _isGameOver = true;
         transform.eulerAngles = new Vector3(transform.eulerAngles.x, _danceXRotation, transform.eulerAngles.z);
         _animator.SetTrigger("Dance");
+    }
+
+    public void Die()
+    {
+        StartCoroutine(DeathRoutine());
+    }
+
+    private IEnumerator DeathRoutine()
+    {
+        _isGameOver = true;
+        GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
+        _deathVFX.gameObject.SetActive(true);
+        yield return new WaitForSeconds(_deathVFX.main.duration);
+        gameObject.SetActive(false);
     }
 }
