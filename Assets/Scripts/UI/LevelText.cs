@@ -12,6 +12,6 @@ public class LevelText : MonoBehaviour
     private void Awake()
     {
         _text = GetComponent<TextMeshProUGUI>();
-        _text.text = _isMainMenu ?  $"Ваш уровень: {_playerLevel.Level}" : $"Уровень повышен!\nТекущий: {_playerLevel.LevelNumber + 1}";
+        _text.text = _isMainMenu ? $"Ваш уровень: {_playerLevel.Level}" : $"Уровень повышен!\nТекущий: {_playerLevel.LevelNumber + 1}";
     }
 }

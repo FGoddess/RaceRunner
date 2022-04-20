@@ -27,7 +27,7 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
             _player.GetComponent<PlayerMover>().Die();
             _gameOverScreen.EndGame(false);
 
-            foreach(var bot in _bots)
+            foreach (var bot in _bots)
             {
                 bot.GetComponent<AIMover>().Die();
             }
@@ -39,7 +39,7 @@ public class ParticipantKiller : MonoBehaviour, IInitializable
         lastBot.GetComponent<AIMover>().Die();
         _bots.Remove(lastBot);
 
-        if(_bots.Count == 0)
+        if (_bots.Count == 0)
         {
             _playerLevel.IncreaseLevel();
             _player.GetComponent<PlayerMover>().WinGame();

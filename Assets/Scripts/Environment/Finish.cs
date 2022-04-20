@@ -30,7 +30,7 @@ public class Finish : MonoBehaviour, IInitializable
             _player.RankData.LapCount++;
         }
 
-        if(_counter == _botsCount)
+        if (_counter == _botsCount)
         {
             _participantKiller.KillLastParticipant();
             _botsCount--;

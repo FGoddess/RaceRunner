@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Audio;
 
 [RequireComponent(typeof(AudioSource))]
 public class AudioPlayer : MonoBehaviour
@@ -25,7 +24,7 @@ public class AudioPlayer : MonoBehaviour
 
         _audioSource = GetComponent<AudioSource>();
 
-        if(!_audioSource.isPlaying)
+        if (!_audioSource.isPlaying)
         {
             _audioSource.clip = _music[Random.Range(0, _music.Length)];
             _audioSource.Play();

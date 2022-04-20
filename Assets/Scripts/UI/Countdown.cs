@@ -24,7 +24,7 @@ public class Countdown : MonoBehaviour
             yield return new WaitForSeconds(1f);
             --_delay;
 
-            if(_delay == 0)
+            if (_delay == 0)
             {
                 _countdown.text = "GO!";
                 CountdownEnded?.Invoke();

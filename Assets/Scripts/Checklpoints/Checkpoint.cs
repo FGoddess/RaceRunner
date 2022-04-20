@@ -15,7 +15,7 @@ public class Checkpoint : MonoBehaviour
         {
             TryIncreaseId(bot.RankData);
         }
-        
+
         if (other.gameObject.TryGetComponent(out PlayerData player))
         {
             TryIncreaseId(player.RankData);

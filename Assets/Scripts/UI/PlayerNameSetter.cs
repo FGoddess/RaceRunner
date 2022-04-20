@@ -1,5 +1,5 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
 
 public class PlayerNameSetter : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class PlayerNameSetter : MonoBehaviour
 
     public void SetName()
     {
-        if(string.IsNullOrWhiteSpace(_inputField.text))
+        if (string.IsNullOrWhiteSpace(_inputField.text))
         {
             PlayerPrefs.SetString("PlayerName", "Player");
             return;

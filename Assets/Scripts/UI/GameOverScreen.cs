@@ -1,6 +1,6 @@
-using UnityEngine;
 using DG.Tweening;
 using System.Collections;
+using UnityEngine;
 
 public class GameOverScreen : MonoBehaviour
 {
@@ -13,12 +13,12 @@ public class GameOverScreen : MonoBehaviour
     {
         StartCoroutine(ActivatePanel(isWin ? _winPanel : _lossPanel));
 
-        if(isWin)
+        if (isWin)
         {
             var level = PlayerPrefs.GetInt("Level", 1);
             ++level;
 
-            if(level >= _maxLevel)
+            if (level >= _maxLevel)
             {
                 PlayerPrefs.SetInt("Level", 1);
                 return;

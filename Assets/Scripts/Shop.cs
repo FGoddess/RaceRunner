@@ -55,7 +55,7 @@ public class Shop : MonoBehaviour
             }
             else if (skin.LevelToUnlock != -1)
             {
-                if(_playerLevel.LevelNumber >= skin.LevelToUnlock)
+                if (_playerLevel.LevelNumber >= skin.LevelToUnlock)
                 {
                     skin.IsPurchased = true;
                     item.ButtonText.text = "Выбрать";
