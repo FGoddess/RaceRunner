@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Skin 1
   m_EditorClassIdentifier: 
   _material: {fileID: 2100000, guid: 00f213278f99b63489f5427ea01397ec, type: 2}
-  <IsEqupied>k__BackingField: 0
+  <IsEqupied>k__BackingField: 1
+  <LevelToUnlock>k__BackingField: -1
   <IsPurchased>k__BackingField: 1
   <Sprite>k__BackingField: {fileID: 21300000, guid: f3c7830a06bec674f916cd9f928da921, type: 3}

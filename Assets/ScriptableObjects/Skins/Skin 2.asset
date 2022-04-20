@@ -14,5 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _material: {fileID: 2100000, guid: 1fa5afdf296c90747ae1ef74b316a763, type: 2}
   <IsEqupied>k__BackingField: 0
+  <LevelToUnlock>k__BackingField: 10
   <IsPurchased>k__BackingField: 0
   <Sprite>k__BackingField: {fileID: 21300000, guid: bb25c156894cc094d961feee06d4ae60, type: 3}

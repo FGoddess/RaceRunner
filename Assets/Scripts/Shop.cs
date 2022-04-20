@@ -10,6 +10,8 @@ public class Shop : MonoBehaviour
 
     [SerializeField] private YandexSDK _yandexSDK;
 
+    [SerializeField] private PlayerLevel _playerLevel;
+
     private ShopItem _equpiedShopItem;
     private Skin _equpiedSkin;
 
@@ -17,6 +19,11 @@ public class Shop : MonoBehaviour
     {
         _yandexSDK.onRewardedAdReward += PurchaseSkin;
         UpdateShop();
+    }
+
+    private void OnDestroy()
+    {
+        _yandexSDK.onRewardedAdReward -= PurchaseSkin;
     }
 
     private void UpdateShop()
@@ -46,6 +53,20 @@ public class Shop : MonoBehaviour
                 item.ButtonText.color = Color.cyan;
                 item.Button.onClick.AddListener(() => EquipSkin(item, skin));
             }
+            else if (skin.LevelToUnlock != -1)
+            {
+                if(_playerLevel.LevelNumber >= skin.LevelToUnlock)
+                {
+                    skin.IsPurchased = true;
+                    item.ButtonText.text = "Выбрать";
+                    item.ButtonText.color = Color.cyan;
+                    item.Button.onClick.AddListener(() => EquipSkin(item, skin));
+                }
+                else
+                {
+                    item.ButtonText.text = $"Нужен уровень: {skin.LevelToUnlock}";
+                }
+            }
             else
             {
                 item.Button.onClick.AddListener(() => /*PurchaseSkin(skin.MaterialColor.ToString())*/_yandexSDK.ShowRewarded(skin.MaterialColor.ToString()));
@@ -55,8 +76,6 @@ public class Shop : MonoBehaviour
 
     private void PurchaseSkin(string item)
     {
-        Debug.Log(item);
-
         var skin = _skins.FirstOrDefault(s => s.MaterialColor.ToString() == item);
         skin.IsPurchased = true;
         skin.IsEqupied = true;
