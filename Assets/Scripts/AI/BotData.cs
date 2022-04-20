@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BotData : MonoBehaviour
 {
-    [SerializeField] private string _name;
+    private string _name;
     private int _id;
 
     public string Name => _name;

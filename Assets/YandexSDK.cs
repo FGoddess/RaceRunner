@@ -5,9 +5,7 @@ using UnityEngine;
 
 public class YandexSDK : MonoBehaviour
 {
-    private static YandexSDK _instance;
-    public static YandexSDK Instance => _instance;
-
+    public static YandexSDK Instance;
     [DllImport("__Internal")]
     private static extern void GetUserData();
     [DllImport("__Internal")]
@@ -57,9 +55,10 @@ public class YandexSDK : MonoBehaviour
 
     private void Awake()
     {
-        if (_instance == null)
+        if (Instance == null)
         {
-            _instance = this;
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -147,6 +146,7 @@ public class YandexSDK : MonoBehaviour
         rewardedAdsPlacements.Clear();
         rewardedAdPlacementsAsInt.Clear();
     }
+
 }
 
 public struct UserData
