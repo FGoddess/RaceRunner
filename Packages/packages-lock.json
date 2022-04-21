@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.k0fe.yandexgamessdk": {
+      "version": "file:C:/Users/kolae/Downloads/yandex-games-plugin-unity-master/yandex-games-plugin-unity-master",
+      "depth": 0,
+      "source": "local",
+      "dependencies": {}
+    },
     "com.unity.cinemachine": {
       "version": "2.6.11",
       "depth": 0,

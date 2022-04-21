@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>{{{ PRODUCT_NAME }}}</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
-    <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="stylesheet" href="TemplateData/style.css">	
+	<!-- Yandex Games SDK -->
+    <script src="https://yandex.ru/games/sdk/v2"></script>
   </head>
   <body class="{{{ SPLASH_SCREEN_STYLE.toLowerCase() }}}">
     <div id="unity-container" class="unity-desktop">
@@ -67,22 +69,32 @@
 
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         container.className = "unity-mobile";
-        config.devicePixelRatio = 1;
+        //config.devicePixelRatio = 1;
       }
 #if BACKGROUND_FILENAME
       canvas.style.background = "url('" + buildUrl + "/{{{ BACKGROUND_FILENAME.replace(/'/g, '%27') }}}') center / cover";
 #endif
       loadingCover.style.display = "";
-
+	  
+	  var player;
+      var sdk;
+      var payments = null;
+	  var myGameInstance   = null;//тестовая строка
+	  
       const script = document.createElement("script");
       script.src = loaderUrl;
       script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
+          createUnityInstance(canvas, config, (progress) => {
           spinner.style.display = "none";
           progressBarEmpty.style.display = "";
           progressBarFull.style.width = `${100 * progress}%`;
         }).then((unityInstance) => {
+		  myGameInstance  = unityInstance; //тестовая строка
+		  
+		  
+		  
           loadingCover.style.display = "none";
+		  
           if (canFullscreen) {
             if (!hideFullScreenButton) {
               fullscreenButton.style.display = "";
@@ -91,11 +103,87 @@
               unityInstance.SetFullscreen(1);
             };
           }
+		  
+		  
+		  
         }).catch((message) => {
           alert(message);
         });
       };
+	  
+	  
+	  
+      YaGames.init({
+            adv: {
+                onAdvClose: wasShown => {
+                      console.info('adv closed!');
+                }
+            }
+        })
+        .then(ysdk => {
+            sdk = ysdk;
+            sdk.adv.showFullscreenAdv({callbacks:{}});
+      });
+
+
+      function auth(){
+        sdk.auth.openAuthDialog().then(() => {
+                // Игрок успешно авторизован, теперь объект Player будет инициализирован.
+                initPlayer();
+                console.log('auth ok');
+            }).catch(() => {
+                 // Игрок не авторизован.
+                 console.log('auth failed');
+            });
+      }
+
+      function initPlayer(){
+        return sdk.getPlayer().then(_player => {
+                player = _player;       
+            }).catch(err => {
+                // Если игрок не авторизован, выбрасывает исключение USER_NOT_AUTHORIZED.
+            });
+      }
+
+      function showFullscrenAd(){
+        sdk.adv.showFullscreenAdv({
+          callbacks: {
+            onClose: function(wasShown) {
+              myGameInstance.SendMessage('YandexSDK', 'OnInterstitialShown');
+            },
+            onError: function(error) {
+              myGameInstance.SendMessage('YandexSDK', 'OnInterstitialFailed', error);
+            }
+          }
+        })
+      }
+
+      function showRewardedAd(id){
+        sdk.adv.showRewardedVideo({
+        callbacks: {
+            onOpen: () => {
+                myGameInstance.SendMessage('YandexSDK', 'OnRewardedOpen', id);
+                //console.log('Video ad open. Id: ' + id);
+            },
+            onRewarded: () => {
+                myGameInstance.SendMessage('YandexSDK', 'OnRewarded', id);
+                //console.log('Rewarded! Id: ' + id);
+            },
+            onClose: () => {
+                myGameInstance.SendMessage('YandexSDK', 'OnRewardedClose', id);
+                //console.log('Video ad closed. Id: ' + id);
+            }, 
+            onError: (e) => {
+                var data = {"id" : id, "error" : error};
+                myGameInstance.SendMessage('YandexSDK', 'OnRewardedError', JSON.stringify(data));
+                //console.log('Error while open video ad:', e);
+            }
+          }
+        })
+      }
+	  
       document.body.appendChild(script);
     </script>
+ 
   </body>
 </html>
