@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec416519d479002439f74f6dfdbc5375, type: 3}
   m_Name: Skin 2
   m_EditorClassIdentifier: 
-  _material: {fileID: 2100000, guid: 1fa5afdf296c90747ae1ef74b316a763, type: 2}
+  _material: {fileID: 2100000, guid: d1ba9913b4495c94baa1c46ef1996e80, type: 2}
+  _sprite: {fileID: 21300000, guid: 1017b34c0f5c69f449b91e7ed1db0b73, type: 3}
+  _levelToUnlock: 10
   <IsEqupied>k__BackingField: 0
-  <LevelToUnlock>k__BackingField: 10
   <IsPurchased>k__BackingField: 0
-  <Sprite>k__BackingField: {fileID: 21300000, guid: bb25c156894cc094d961feee06d4ae60, type: 3}
