@@ -8,23 +8,30 @@ public class Shop : MonoBehaviour
 
     [SerializeField] private Material _playerMaterial;
 
-    [SerializeField] private YandexSDK _yandexSDK;
-
     [SerializeField] private PlayerLevel _playerLevel;
+    [SerializeField] private YandexSDK _yandexSDK;
 
     private ShopItem _equpiedShopItem;
     private Skin _equpiedSkin;
 
-    private void Awake()
+    private void Start()
     {
+        _yandexSDK = YandexSDK.instance;
         _yandexSDK.onRewardedAdReward += PurchaseSkin;
+        _yandexSDK.onRewardedAdOpened += SDKNull;
+        _yandexSDK.onRewardedAdClosed += SDKNull;
+        _yandexSDK.onRewardedAdError += SDKNull;
+        _yandexSDK.onInterstitialShown += SDKNull;
+        _yandexSDK.onInterstitialFailed += SDKNull;
+
         UpdateShop();
     }
 
-    private void OnDestroy()
-    {
-        _yandexSDK.onRewardedAdReward -= PurchaseSkin;
-    }
+    private void SDKNull(string n) { }
+
+    private void SDKNull(int n) { }
+
+    private void SDKNull() { }
 
     private void UpdateShop()
     {
@@ -69,7 +76,7 @@ public class Shop : MonoBehaviour
             }
             else
             {
-                item.Button.onClick.AddListener(() => /*PurchaseSkin(skin.MaterialColor.ToString())*/_yandexSDK.ShowRewarded(skin.MaterialColor.ToString()));
+                item.Button.onClick.AddListener(() => _yandexSDK.ShowRewarded(skin.MaterialColor.ToString()));
             }
         }
     }
