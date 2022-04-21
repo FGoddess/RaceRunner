@@ -23,7 +23,10 @@ public class AudioPlayer : MonoBehaviour
         }
 
         _audioSource = GetComponent<AudioSource>();
+    }
 
+    private void Start()
+    {
         if (!_audioSource.isPlaying)
         {
             _audioSource.clip = _music[Random.Range(0, _music.Length)];

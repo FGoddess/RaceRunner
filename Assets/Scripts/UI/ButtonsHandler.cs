@@ -14,8 +14,14 @@ public class ButtonsHandler : MonoBehaviour
         else
         {
             PlayerPrefs.SetInt("Level", id);
+            PlayerPrefs.Save();
         }
 
+        SceneManager.LoadScene($"Level {id}");
+    }
+    
+    public void LoadLevel(int id)
+    {
         SceneManager.LoadScene($"Level {id}");
     }
 

@@ -15,9 +15,11 @@ public class PlayerNameSetter : MonoBehaviour
         if (string.IsNullOrWhiteSpace(_inputField.text))
         {
             PlayerPrefs.SetString("PlayerName", "Player");
+            PlayerPrefs.Save();
             return;
         }
 
         PlayerPrefs.SetString("PlayerName", _inputField.text);
+        PlayerPrefs.Save();
     }
 }

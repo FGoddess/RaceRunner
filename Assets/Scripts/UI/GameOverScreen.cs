@@ -21,10 +21,12 @@ public class GameOverScreen : MonoBehaviour
             if (level >= _maxLevel)
             {
                 PlayerPrefs.SetInt("Level", 1);
+                PlayerPrefs.Save();
                 return;
             }
 
-            PlayerPrefs.SetInt("Level", ++level);
+            PlayerPrefs.SetInt("Level", level);
+            PlayerPrefs.Save();
         }
     }
 

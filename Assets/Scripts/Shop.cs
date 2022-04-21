@@ -21,10 +21,22 @@ public class Shop : MonoBehaviour
         _yandexSDK.onRewardedAdOpened += SDKNull;
         _yandexSDK.onRewardedAdClosed += SDKNull;
         _yandexSDK.onRewardedAdError += SDKNull;
+
         _yandexSDK.onInterstitialShown += SDKNull;
         _yandexSDK.onInterstitialFailed += SDKNull;
 
+        SetInitialSkin();
         UpdateShop();
+    }
+
+    private void SetInitialSkin()
+    {
+        if (PlayerPrefs.HasKey("Initialized")) return;
+
+        _skins[0].Equip();
+        _playerMaterial.color = _skins[0].MaterialColor;
+        PlayerPrefs.SetInt("Initialized", 0);
+        PlayerPrefs.Save();
     }
 
     private void SDKNull(string n) { }
@@ -46,14 +58,17 @@ public class Shop : MonoBehaviour
 
             var item = temp.GetComponent<ShopItem>();
 
+            skin.CheckSaves();
+
             item.Image.sprite = skin.Sprite;
-            item.ButtonText.text = skin.IsPurchased ? skin.IsEqupied ? "Выбрано" : "Выбрать" : "Смотреть видео";
+            item.ButtonText.text = skin.IsPurchased ? "Выбрать" : "Смотреть видео";
 
             if (skin.IsEqupied)
             {
                 _equpiedSkin = skin;
                 _equpiedShopItem = item;
                 item.ButtonText.color = Color.green;
+                item.ButtonText.text = "Выбрано";
             }
             else if (skin.IsPurchased)
             {
@@ -62,9 +77,9 @@ public class Shop : MonoBehaviour
             }
             else if (skin.LevelToUnlock != -1)
             {
-                if (_playerLevel.LevelNumber >= skin.LevelToUnlock)
+                if (_playerLevel.Level >= skin.LevelToUnlock)
                 {
-                    skin.IsPurchased = true;
+                    skin.Purchase();
                     item.ButtonText.text = "Выбрать";
                     item.ButtonText.color = Color.cyan;
                     item.Button.onClick.AddListener(() => EquipSkin(item, skin));
@@ -84,9 +99,10 @@ public class Shop : MonoBehaviour
     private void PurchaseSkin(string item)
     {
         var skin = _skins.FirstOrDefault(s => s.MaterialColor.ToString() == item);
-        skin.IsPurchased = true;
-        skin.IsEqupied = true;
-        _equpiedSkin.IsEqupied = false;
+        skin.Purchase();
+        skin.Equip();
+
+        _equpiedSkin.UnEquip();
         _equpiedSkin = skin;
 
         _playerMaterial.color = skin.MaterialColor;
@@ -100,13 +116,15 @@ public class Shop : MonoBehaviour
         shopItem.ButtonText.color = Color.green;
         _equpiedShopItem.ButtonText.text = "Выбрать";
 
-        skin.IsEqupied = true;
+        skin.Equip();
         _playerMaterial.color = skin.MaterialColor;
 
-        _equpiedSkin.IsEqupied = false;
+        _equpiedSkin.UnEquip();
         _equpiedShopItem.ButtonText.color = Color.cyan;
 
         _equpiedSkin = skin;
         _equpiedShopItem = shopItem;
+
+        UpdateShop();
     }
 }
